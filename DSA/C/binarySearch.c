@@ -6,12 +6,6 @@
     return 1;     \
 })
 
-#define max(x, y) ({     \
-    typeof (x) _x = x;   \
-    typeof (y) _y = y;   \
-    _x > _y ? _x : _y;   \
-})
-
 int binarySearch(int search, int* arr, size_t size);
 
 int main(int argc, char** argv) {
@@ -33,7 +27,9 @@ int main(int argc, char** argv) {
 
         sscanf(argv[i], "%d", &array[i - 2]);
 
-        if (array[i] < array[max(0, i - 1)]) {
+        if (i == 2) continue;
+
+        if (array[i - 3] > array[i - 2]) {
         
             free(array);
             bye("Sort your array in ascending order first");
