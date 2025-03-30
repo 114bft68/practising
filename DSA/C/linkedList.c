@@ -24,13 +24,14 @@ node* createNode(void* data) {
     }
 
     if (CurrentNode) CurrentNode->next = new;
-    CurrentNode = new;
 
     *new = (node) {
         .prev = CurrentNode,
         .data = data,
         .next = NULL
     };
+
+    CurrentNode = new;
 
     return CurrentNode;
 
