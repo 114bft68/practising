@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     int* array = malloc((argc - 2) * sizeof(int));
     if (!array) bye("Memory allocation failed");
 
-    for (int i = 2; i < argc; i++) {
+    for (int i = 2; i < argc; ++i) {
 
         sscanf(argv[i], "%d", &array[i - 2]);
 
@@ -54,7 +54,7 @@ int binarySearch(int search, int* arr, size_t size) {
     while (first <= last) {
         
         int mid = (int) ((first + last) / 2);
-        counter++;
+        ++counter;
 
         if (arr[mid] == search) {
             
