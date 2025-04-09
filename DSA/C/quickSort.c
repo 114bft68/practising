@@ -31,6 +31,9 @@ int main(int argc, char** argv) {
         printf("%d ", array[i]);
     }
 
+    free(array);
+    array = NULL;
+
     puts("");
 
     return 0;

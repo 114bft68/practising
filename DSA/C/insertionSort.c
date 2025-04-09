@@ -32,6 +32,9 @@ int main(int argc, char** argv) {
         printf("%d ", array[i]);
     }
 
+    free(array);
+    array = NULL;
+
     puts("");
 
     return 0;
@@ -44,7 +47,7 @@ void insertionSort(int* array, size_t size) {
         int key = array[i],
             beforeKey = i - 1;
 
-        while (key < array[beforeKey] && beforeKey > -1)
+        while (beforeKey > -1 && key < array[beforeKey])
         {
             array[beforeKey + 1] = array[beforeKey];
             --beforeKey;

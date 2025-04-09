@@ -1,3 +1,5 @@
+/* template for implementing sorting algorithms (get input and output sorted array) */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -6,7 +8,7 @@
     return 1;     \
 })
 
-void bubbleSort(int* array, size_t size);
+void sort(int* array, size_t size);
 
 int main(int argc, char** argv) {
     
@@ -24,7 +26,7 @@ int main(int argc, char** argv) {
         sscanf(argv[i], "%d", &array[i - 1]);
     }
 
-    bubbleSort(array, argc - 1);
+    sort(array, argc - 1);
 
     for (int i = 0; i < argc - 1; ++i)
     {
@@ -40,22 +42,6 @@ int main(int argc, char** argv) {
 
 }
 
-void bubbleSort(int* array, size_t size) {
-    
-    for (size_t i = 0; i < size - 1; ++i) {
-        
-        for (size_t j = 0; j < size - 1 - i; ++j) {
-
-            if (array[j] > array[j + 1]) {
-
-                int item = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = item;
-
-            }
-
-        }
-
-    }
+void sort(int* array, size_t size) {
 
 }

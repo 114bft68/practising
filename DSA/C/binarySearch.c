@@ -42,6 +42,8 @@ int main(int argc, char** argv) {
     printf("%s. Looped for %d times.\n", looped ? "Found" : "Not found", looped);
 
     free(array);
+    array = NULL;
+
     return 0;
 
 }
