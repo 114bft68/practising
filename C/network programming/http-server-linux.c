@@ -129,9 +129,9 @@ int main(void)
 
             FILE *file = fopen(path, "rb");
             if (!file)
-                quit(return 1, "fopen",
-                     write(clientSocketFD, !strcmp(connection, "1.1") ? ERROR404_1_1 : ERROR404_1_0, strlen(ERROR404_1_1)),
-                     close(clientSocketFD))
+                quit(continue/*return 1*/, "fopen",
+                     write(clientSocketFD, !strcmp(connection, "1.1") ? ERROR404_1_1 : ERROR404_1_0, strlen(ERROR404_1_1))/*,
+                     close(clientSocketFD)*/)
 
             long   size = 0;
             char  *message;
@@ -151,15 +151,17 @@ int main(void)
                 write(clientSocketFD, !strcmp(connection, "1.1") ? ERROR500_1_1 : ERROR500_1_0,
                       strlen(ERROR500_1_1));                             // no retrying even if write fails (intended)
                 
-                close(clientSocketFD);
+                //close(clientSocketFD);
 
-                quit(return 1, "fseek, ftell, malloc");
+                quit(/*return 1*/ continue, "fseek, ftell, malloc");
             }
             
             sprintf(message, MESSAGE_200, httpVersion, size, mimeType);
 
             if (fread(message + msglen, 1, size, file) != size && ferror(file)) 
-                quit(return 1, "fread", free(message));
+                quit(continue, "fread",
+                     write(clientSocketFD, !strcmp(connection, "1.1") ? ERROR500_1_1 : ERROR500_1_0, strlen(ERROR500_1_1)),
+                     free(message), fclose(file));
 
             fclose(file);                                                // 
 
