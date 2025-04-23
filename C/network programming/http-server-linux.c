@@ -125,14 +125,13 @@ int main(void)
             }
             decode(path);                                                // decode the path
 
-            const char *mimeType = getMime(path);
-
             FILE *file = fopen(path, "rb");
             if (!file)
                 quit(continue/*return 1*/, "fopen",
                      write(clientSocketFD, !strcmp(connection, "1.1") ? ERROR404_1_1 : ERROR404_1_0, strlen(ERROR404_1_1))/*,
                      close(clientSocketFD)*/)
 
+            const char *mimeType = getMime(path);
             long   size = 0;
             char  *message;
             size_t msglen = strlen(MESSAGE_200) - MESSAGE_200_FS + 3 + /*intlen(size)*/ + strlen(mimeType);
@@ -192,15 +191,19 @@ int reg(const char *string, const char *regex, int casecnvrt, int nofull, int va
     5. the amount of variables provided in ...
         (if nofull, varamount does not count the variable which stores the full capture group, ... does not contain the variable to store full either. vice versa)
     6. the sizes of the variables in ... are expected to be sufficient to store the substring and a null terminator
+
+    return values: 0: no error, 1: regcomp or no match, 2: matched group is cut because its length > variable length, 3: memory allocation failure
 */
 {
     int totalGroups = varamount + (nofull ? 1 : 0);
     regex_t    r;                                                        // the compiled regex
-    regmatch_t regcapture[totalGroups];                                  // capture totalGroups groups
+    regmatch_t *regcapture = malloc(totalGroups);                        // capture totalGroups groups
+    if (!regcapture) return 3;
 
     if (regcomp(&r, regex, REG_EXTENDED)) return 1;
     if (regexec(&r, string, totalGroups, regcapture, 0))                 // REG_NOMATCH or unexpected errors only (wrong regexes can also cause errors (I tested my regexes and they are syntatically correct))
     {
+        free(regcapture);
         regfree(&r);
         return 1;
     }
@@ -241,6 +244,7 @@ int reg(const char *string, const char *regex, int casecnvrt, int nofull, int va
 
     va_end(dests);
 
+    free(regcapture);
     return status;
 }
 
@@ -252,7 +256,7 @@ void decode(char *url)
     size_t len = strlen(url),
            cur = pos - url;
 
-    char substr[strlen(url) + 1];
+    char *substr = malloc(strlen(url) + 1);
 
     strncpy(substr, url, cur);
 
@@ -274,6 +278,8 @@ void decode(char *url)
 
     substr[cur] = '\0';
     strncpy(url, substr, cur + 1);
+
+    free(substr);
 }
 
 const char *mime2_5_6[][2] = {
